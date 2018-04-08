@@ -45,7 +45,7 @@ public class SeaPort extends Thing {
    * @param index the index
    * @param parent the parent
    * @param docks the {@link List} of {@link Dock}s associated with this SeaPort
-   * @param inWaitQueue the {@link list} of {@link Ship}s waiting in queue 
+   * @param inWaitQueue the {@link List} of {@link Ship}s waiting in queue
    * @param ships the {@link List} of {@link Ship}s in this SeaPort
    * @param persons the {@link List} of {@link Person}s working at this SeaPort
    */
@@ -73,14 +73,14 @@ public class SeaPort extends Thing {
   }
 
   /**
-   * @return the {@link list} of {@link Ship}s waiting in queue
+   * @return the {@link List} of {@link Ship}s waiting in queue
    */
   public List<Ship> getInWaitQueue() {
     return inWaitQueue;
   }
 
   /**
-   * @param inWaitQueue the {@link list} of {@link Ship}s waiting in queue
+   * @param inWaitQueue the {@link List} of {@link Ship}s waiting in queue
    */
   public void setInWaitQueue(List<Ship> inWaitQueue) {
     this.inWaitQueue = inWaitQueue;

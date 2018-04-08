@@ -32,7 +32,19 @@ public class Dock extends Thing {
     super(name, index, parent);
     this.ship = ship;
   }
-  
+
+  /**
+   * Constructor.
+   *
+   * @param name the name
+   * @param index the index
+   * @param parent the parent
+   */
+  public Dock(String name, int index, int parent) {
+    super(name, index, parent);
+  }
+
+
   /**
    * @return the docked ship
    */

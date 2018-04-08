@@ -10,6 +10,7 @@ import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.io.File;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -53,11 +54,17 @@ public class SeaPortProgram {
         JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
     JButton fileDialogButton = new JButton("ChooseFile");
     JFileChooser chooser = new JFileChooser(".");
-    
+
     buttonPanel.add(fileDialogButton);
     textPanel.add(scrollPane, createConstraints(0, 0));
 
-    fileDialogButton.addActionListener(event -> chooser.showOpenDialog(frame));
+    fileDialogButton.addActionListener(event -> {
+      int returnValue = chooser.showOpenDialog(frame);
+      if (returnValue == JFileChooser.APPROVE_OPTION) {
+        world.readFile(chooser.getSelectedFile());
+      }
+
+    });
     
     frame.add(buttonPanel, BorderLayout.NORTH);
     frame.add(textPanel, BorderLayout.CENTER);
