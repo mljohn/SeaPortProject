@@ -54,7 +54,7 @@ public class CargoShip extends Ship {
    * 
    * @param name the name
    * @param index the index
-  * @param parent the parent
+   * @param parent the parent
    * @param arrivalTime the arrival time
    * @param dockTime the time in dock
    * @param draft the draft of the ship
@@ -126,6 +126,7 @@ public class CargoShip extends Ship {
         .append(cargoVolume)
         .append("\nCargo Weight: ")
         .append(cargoWeight)
+        .append("\n")
         .toString();
   }
 }

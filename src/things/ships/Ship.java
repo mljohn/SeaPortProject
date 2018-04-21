@@ -6,6 +6,7 @@
  */
 package things.ships;
 
+import java.util.Comparator;
 import java.util.List;
 
 import main.PortTime;
@@ -50,6 +51,8 @@ public class Ship extends Thing {
    */
   public Ship(String name, int index, int parent, double weight, double length, double width, double draft) {
     super(name, index, parent);
+    this.arrivalTime = new PortTime(0);
+    this.dockTime = new PortTime(0);
     this.weight = weight;
     this.length = length;
     this.width = width;
@@ -196,10 +199,23 @@ public class Ship extends Thing {
         .append(weight)
         .append("\nWidth: ")
         .append(width)
-        .append("\nJobs: ");
-    
-    jobs.forEach(job -> sb.append("\n\t" + job));
-    
+        .append("\nJobs: ")
+        .append("\n");
+
+    if (jobs == null) {
+      sb.append("No Jobs.");
+    } else {
+      jobs.forEach(job -> sb.append("\t" + job + "\n"));
+    }
     return sb.toString();
+  }
+
+  @Override
+  public int compareTo(Thing o) {
+    Ship ship = (Ship) o;
+    return Comparator.comparing(Ship::getWeight)
+        .thenComparing(Ship::getLength)
+        .thenComparing(Ship::getDraft)
+        .compare(this, ship);
   }
 }

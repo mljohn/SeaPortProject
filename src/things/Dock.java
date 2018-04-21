@@ -58,11 +58,15 @@ public class Dock extends Thing {
   public void setShip(Ship ship) {
     this.ship = ship;
   }
-  
+
   @Override
   public String toString() {
-    return new StringBuilder(super.toString())
-        .append(ship.toString())
-        .toString();
+    StringBuilder sb = new StringBuilder(super.toString());
+    if (ship == null) {
+      sb.append("\nNo Ship");
+    } else {
+      sb.append(ship.toString());
+    }
+    return sb.toString();
   }
 }

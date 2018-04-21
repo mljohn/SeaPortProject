@@ -6,20 +6,17 @@
  */
 package main;
 
-import java.awt.BorderLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.io.File;
-
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-
 import guielements.SeaPortFrame;
 import guielements.SeaPortTextArea;
+import things.Thing;
 import things.World;
+import things.ships.Ship;
+
+import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This application models a sea port. The user can choose a data file to import, which is then scanned
@@ -28,7 +25,7 @@ import things.World;
  */
 public class SeaPortProgram {
   
-  World world = new World();
+  private World world = new World();
 
   /**
    * Entry point into the application. Builds the GUI.
@@ -49,28 +46,72 @@ public class SeaPortProgram {
     SeaPortFrame frame = new SeaPortFrame("Sea Port Program", 500, 300);
     JPanel buttonPanel = new JPanel();
     JPanel textPanel = new JPanel(new GridBagLayout());
+    JPanel sortButtonPanel = new JPanel();
     SeaPortTextArea textArea = new SeaPortTextArea(false);
-    JScrollPane scrollPane = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, 
+    JScrollPane textScrollPane = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
         JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
     JButton fileDialogButton = new JButton("ChooseFile");
+    JButton sortShipsButton = new JButton("Sort Ships");
+    JButton showTreeButton = new JButton("Show Tree");
     JFileChooser chooser = new JFileChooser(".");
 
+    DefaultMutableTreeNode top = new DefaultMutableTreeNode("World");
+    createNodes(top);
+    JTree tree = new JTree(top);
+
+    JScrollPane treeScrollPane = new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+        JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+
+
     buttonPanel.add(fileDialogButton);
-    textPanel.add(scrollPane, createConstraints(0, 0));
+    textPanel.add(textScrollPane, createConstraints(0, 0));
 
     fileDialogButton.addActionListener(event -> {
       int returnValue = chooser.showOpenDialog(frame);
       if (returnValue == JFileChooser.APPROVE_OPTION) {
-        world.readFile(chooser.getSelectedFile());
+        List<String[]> fileContents = world.readFile(chooser.getSelectedFile());
+        StringBuilder contents = new StringBuilder();
+        fileContents.forEach(line -> {
+          for (String s : line) {
+            contents.append(s);
+            contents.append(" ");
+          }
+          contents.append("\n");
+        });
+        textArea.setText(contents.toString());
+        frame.add(sortButtonPanel, BorderLayout.SOUTH);
+        frame.display();
       }
-
     });
+    sortShipsButton.addActionListener(event -> {
+      List<Ship> shipList = new ArrayList<>();
+      world.getPorts().forEach(port -> shipList.addAll(port.getShips()));
+      shipList.sort(Ship::compareTo);
+      StringBuilder ships = new StringBuilder();
+      shipList.forEach(ships::append);
+      textArea.setText(ships.toString());
+      textPanel.removeAll();
+      textPanel.add(textScrollPane, createConstraints(0, 0));
+      frame.display();
+      frame.repaint();
+        }
+    );
+
+    showTreeButton.addActionListener(event -> {
+      textPanel.removeAll();
+      textPanel.add(treeScrollPane, createConstraints(0, 0));
+      frame.display();
+      frame.repaint();
+    });
+
+    sortButtonPanel.add(sortShipsButton);
+    sortButtonPanel.add(showTreeButton);
     
     frame.add(buttonPanel, BorderLayout.NORTH);
     frame.add(textPanel, BorderLayout.CENTER);
+
     
     frame.display();
-    
   }
   
   /**
@@ -90,5 +131,12 @@ public class SeaPortProgram {
     gbc.weighty = 1.0;
     gbc.anchor = GridBagConstraints.CENTER;
     return gbc;
+  }
+
+  private void createNodes(DefaultMutableTreeNode top) {
+    DefaultMutableTreeNode category = new DefaultMutableTreeNode("Sea Ports");
+    DefaultMutableTreeNode element = new DefaultMutableTreeNode(new Thing());
+    top.add(category);
+    category.add(element);
   }
 }

@@ -8,13 +8,10 @@ package things;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import main.PortTime;
@@ -27,7 +24,13 @@ import things.ships.Ship;
  */
 public class World extends Thing {
   
-  private Map<Integer, SeaPort> ports;
+  private List<SeaPort> ports = new ArrayList<>();
+  private Map<Integer, SeaPort> portsMap = new HashMap<>();
+  private Map<Integer, Dock> docksMap = new HashMap<>();
+  private Map<Integer, Ship> passengerShipsMap = new HashMap<>();
+  private Map<Integer, Ship> cargoShipsMap = new HashMap<>();
+  private Map<Integer, Person> personsMap = new HashMap<>();
+  private Map<Integer, Job> jobsMap = new HashMap<>();
   private PortTime time;
 
   /**
@@ -56,7 +59,7 @@ public class World extends Thing {
    * @param ports the {@link List} of {@link SeaPort}s
    * @param time the {@link PortTime}
    */
-  public World(String name, int index, int parent, Map<Integer, SeaPort> ports, PortTime time) {
+  public World(String name, int index, int parent, List<SeaPort> ports, PortTime time) {
     super(name, index, parent);
     this.ports = ports;
     this.time = time;
@@ -65,14 +68,14 @@ public class World extends Thing {
   /**
    * @return the {@link List} of {@link SeaPort}s
    */
-  public Map<Integer, SeaPort> getPorts() {
+  public List<SeaPort> getPorts() {
     return ports;
   }
 
   /**
    * @param ports the {@link List} of {@link SeaPort}s
    */
-  public void setPorts(Map<Integer, SeaPort> ports) {
+  public void setPorts(List<SeaPort> ports) {
     this.ports = ports;
   }
 
@@ -90,7 +93,7 @@ public class World extends Thing {
     this.time = time;
   }
 
-  public void readFile(File file){
+  public List<String[]> readFile(File file){
     Path path = Paths.get(file.getAbsolutePath());
     List<String[]> fileContents = new ArrayList<>();
     try {
@@ -105,21 +108,14 @@ public class World extends Thing {
       //do nothing
     }
 
-    fileContents.forEach(line -> {
-      for (String s : line) {
-        System.err.print(s + " ");
-      }
-      System.err.println();
-    });
-
     createObjects(fileContents);
+    return fileContents;
   }
 
   private void createObjects(List<String[]> objectsToCreate) {
-    List<SeaPort> ports = new ArrayList<>();
     List<Dock> docks = new ArrayList<>();
-    List<Ship> cShip = new ArrayList<>();
-    List<Ship> pShip = new ArrayList<>();
+    List<Ship> passengerShip = new ArrayList<>();
+    List<Ship> cargoShip = new ArrayList<>();
     List<Person> persons = new ArrayList<>();
     List<Job> jobs = new ArrayList<>();
     objectsToCreate.forEach(obj -> {
@@ -131,12 +127,12 @@ public class World extends Thing {
           docks.add(new Dock(obj[1], Integer.valueOf(obj[2]), Integer.valueOf(obj[3])));
           break;
         case "pship" :
-          pShip.add(new PassengerShip(obj[1], Integer.valueOf(obj[2]), Integer.valueOf(obj[3]), Double.valueOf(obj[4]),
+          passengerShip.add(new PassengerShip(obj[1], Integer.valueOf(obj[2]), Integer.valueOf(obj[3]), Double.valueOf(obj[4]),
               Double.valueOf(obj[5]), Double.valueOf(obj[6]), Double.valueOf(obj[7]), Integer.valueOf(obj[8]),
               Integer.valueOf(obj[9]), Integer.valueOf(obj[10])));
           break;
         case "cship" :
-          cShip.add(new CargoShip(obj[1], Integer.valueOf(obj[2]), Integer.valueOf(obj[3]), Double.valueOf(obj[4]),
+          cargoShip.add(new CargoShip(obj[1], Integer.valueOf(obj[2]), Integer.valueOf(obj[3]), Double.valueOf(obj[4]),
               Double.valueOf(obj[5]), Double.valueOf(obj[6]), Double.valueOf(obj[7]), Double.valueOf(obj[8]),
               Double.valueOf(obj[9]), Double.valueOf(obj[10])));
           break;
@@ -152,13 +148,82 @@ public class World extends Thing {
               requirements));
       }
     });
+
+    passengerShip.forEach(ship -> {
+      List<Job> jobList = new ArrayList<>();
+      jobs.forEach(job -> {
+        if (ship.getIndex() == job.getParent()) {
+          jobList.add(job);
+        }
+      });
+      ship.setJobs(jobList);
+    });
+
+    cargoShip.forEach(ship -> {
+      List<Job> jobList = new ArrayList<>();
+      jobs.forEach(job -> {
+        if (ship.getIndex() == job.getParent()) {
+          jobList.add(job);
+        }
+      });
+      ship.setJobs(jobList);
+    });
+
+    docks.forEach(dock -> {
+      cargoShip.forEach(ship -> {
+        if (dock.getIndex() == ship.getParent()) {
+          dock.setShip(ship);
+        }
+      });
+      passengerShip.forEach(ship -> {
+        if (dock.getIndex() == ship.getParent()) {
+          dock.setShip(ship);
+        }
+      });
+    });
+
+    ports.forEach(port -> {
+      List<Dock> dockList = new ArrayList<>();
+      List<Ship> shipList = new ArrayList<>();
+      List<Person> personList = new ArrayList<>();
+      docks.forEach(dock -> {
+        if (port.getIndex() == dock.getParent()) {
+          dockList.add(dock);
+        }
+      });
+      cargoShip.forEach(ship -> {
+        if (port.getIndex() == ship.getParent()) {
+          shipList.add(ship);
+        }
+      });
+      passengerShip.forEach(ship -> {
+        if (port.getIndex() == ship.getParent()) {
+          shipList.add(ship);
+        }
+      });
+      persons.forEach(person -> {
+        if (port.getIndex() == person.getParent()) {
+          personList.add(person);
+        }
+      });
+      port.setDocks(dockList);
+      port.setShips(shipList);
+      port.setPersons(personList);
+    });
+
+    ports.forEach(port -> portsMap.put(port.getIndex(), port));
+    docks.forEach(dock -> docksMap.put(dock.getIndex(), dock));
+    passengerShip.forEach(ship -> passengerShipsMap.put(ship.getIndex(), ship));
+    cargoShip.forEach(ship -> cargoShipsMap.put(ship.getIndex(), ship));
+    persons.forEach(person -> personsMap.put(person.getIndex(), person));
+    jobs.forEach(job -> jobsMap.put(job.getIndex(), job));
   }
   
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder(super.toString());
     sb.append("\nPorts:");
-    ports.forEach((number, port) -> sb.append("\n\t" + port));
+    ports.forEach(port -> sb.append("\n\t" + port));
     sb.append("\n\nPort Time: ").append(time);
     return sb.toString();
   }

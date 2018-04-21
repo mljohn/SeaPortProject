@@ -36,7 +36,7 @@ public class PassengerShip extends Ship {
    * @param length the length
    * @param width the width
    * @param draft the draft
-   * @param numberOfPassengrs the number of passengers
+   * @param numberOfPassengers the number of passengers
    * @param numberOfRooms the total number of rooms
    * @param numberOfOccupiedRooms the number of occupied rooms
    */
@@ -125,6 +125,7 @@ public class PassengerShip extends Ship {
         .append(numberOfPassengers)
         .append("\nNumber of Rooms: ")
         .append(numberOfRooms)
+        .append("\n")
         .toString();
   }
 }

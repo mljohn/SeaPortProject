@@ -6,6 +6,7 @@
  */
 package things;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import things.ships.Ship;
@@ -15,10 +16,10 @@ import things.ships.Ship;
  */
 public class SeaPort extends Thing {
   
-  private List<Dock> docks;
-  private List<Ship> inWaitQueue;
-  private List<Ship> ships;
-  private List<Person> persons;
+  private List<Dock> docks = new ArrayList<>();
+  private List<Ship> inWaitQueue = new ArrayList<>();
+  private List<Ship> ships = new ArrayList<>();
+  private List<Person> persons = new ArrayList<>();
 
   /**
    * Default constructor.
