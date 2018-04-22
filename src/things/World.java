@@ -1,7 +1,7 @@
 /**
  * File: World
  * Author: Michelle John
- * Date: 25 March 2018
+ * Date: 23 April 2018
  * Purpose: Project Setup
  */
 package things;
@@ -223,7 +223,7 @@ public class World extends Thing {
   public String toString() {
     StringBuilder sb = new StringBuilder(super.toString());
     sb.append("\nPorts:");
-    ports.forEach(port -> sb.append("\n\t" + port));
+    ports.forEach(port -> sb.append("\n\t").append(port));
     sb.append("\n\nPort Time: ").append(time);
     return sb.toString();
   }

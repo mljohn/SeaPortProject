@@ -1,14 +1,13 @@
 /**
  * File: SeaPortProgram
  * Author: Michelle John
- * Date: 25 March 2018
+ * Date: 23 April 2018
  * Purpose: Project Setup
  */
 package main;
 
 import guielements.SeaPortFrame;
 import guielements.SeaPortTextArea;
-import things.Thing;
 import things.World;
 import things.ships.Ship;
 
@@ -55,13 +54,6 @@ public class SeaPortProgram {
     JButton showTreeButton = new JButton("Show Tree");
     JFileChooser chooser = new JFileChooser(".");
 
-    DefaultMutableTreeNode top = new DefaultMutableTreeNode("World");
-    createNodes(top);
-    JTree tree = new JTree(top);
-
-    JScrollPane treeScrollPane = new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-        JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-
 
     buttonPanel.add(fileDialogButton);
     textPanel.add(textScrollPane, createConstraints(0, 0));
@@ -98,6 +90,12 @@ public class SeaPortProgram {
     );
 
     showTreeButton.addActionListener(event -> {
+      DefaultMutableTreeNode top = new DefaultMutableTreeNode("World");
+      createNodes(top);
+      JTree tree = new JTree(top);
+
+      JScrollPane treeScrollPane = new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+          JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
       textPanel.removeAll();
       textPanel.add(treeScrollPane, createConstraints(0, 0));
       frame.display();
@@ -134,9 +132,19 @@ public class SeaPortProgram {
   }
 
   private void createNodes(DefaultMutableTreeNode top) {
-    DefaultMutableTreeNode category = new DefaultMutableTreeNode("Sea Ports");
-    DefaultMutableTreeNode element = new DefaultMutableTreeNode(new Thing());
-    top.add(category);
-    category.add(element);
+    world.getPorts().forEach(port -> {
+      DefaultMutableTreeNode portNode = new DefaultMutableTreeNode(port.getName());
+      port.getDocks().forEach(dock -> {
+        DefaultMutableTreeNode dockNode = new DefaultMutableTreeNode(dock.getName());
+        if (dock.getShip() != null) {
+          DefaultMutableTreeNode shipNode = new DefaultMutableTreeNode(dock.getShip().getName());
+          dock.getShip().getJobs().forEach(job -> shipNode.add(new DefaultMutableTreeNode(job.getName())));
+          dockNode.add(shipNode);
+        }
+        portNode.add(dockNode);
+      });
+      port.getPersons().forEach(person -> portNode.add(new DefaultMutableTreeNode(person.getName())));
+      top.add(portNode);
+    });
   }
 }

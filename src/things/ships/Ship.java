@@ -1,7 +1,7 @@
 /**
  * File: Ship
  * Author: Michelle John
- * Date: 25 March 2018
+ * Date: 23 April 2018
  * Purpose: Project Setup
  */
 package things.ships;
@@ -117,7 +117,7 @@ public class Ship extends Thing {
   /**
    * @return the ship's draft
    */
-  public double getDraft() {
+  double getDraft() {
     return draft;
   }
 
@@ -131,7 +131,7 @@ public class Ship extends Thing {
   /**
    * @return the ship's length
    */
-  public double getLength() {
+  double getLength() {
     return length;
   }
 
@@ -145,7 +145,7 @@ public class Ship extends Thing {
   /**
    * @return the ship's weight
    */
-  public double getWeight() {
+  double getWeight() {
     return weight;
   }
 
@@ -205,7 +205,7 @@ public class Ship extends Thing {
     if (jobs == null) {
       sb.append("No Jobs.");
     } else {
-      jobs.forEach(job -> sb.append("\t" + job + "\n"));
+      jobs.forEach(job -> sb.append("\t").append(job).append("\n"));
     }
     return sb.toString();
   }

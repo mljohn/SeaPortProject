@@ -1,7 +1,7 @@
 /**
  * File: Person
  * Author: Michelle John
- * Date: 25 March 2018
+ * Date: 23 April 2018
  * Purpose: Project Setup
  */
 package things;
@@ -47,9 +47,8 @@ public class Person extends Thing {
 
   @Override
   public String toString() {
-    return new StringBuilder(super.toString())
-        .append("\nSkill: ")
-        .append(skill)
-        .toString();
+    return super.toString()
+        + "\nSkill: "
+        + skill;
   }
 }

@@ -1,7 +1,7 @@
 /**
  * File: Thing
  * Author: Michelle John
- * Date: 25 March 2018
+ * Date: 23 April 2018
  * Purpose: Project Setup
  */
 package things;
@@ -89,13 +89,12 @@ public class Thing implements Comparable<Thing> {
   
   @Override
   public String toString() {
-    return new StringBuilder("Index: ")
-        .append(index)
-        .append("\nName: ")
-        .append(name)
-        .append("\nParent: ")
-        .append(parent)
-        .toString();
+    return "\nIndex: "
+        + index
+        + "\nName: "
+        + name
+        + "\nParent: "
+        + parent;
   }
 
   @Override

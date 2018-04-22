@@ -1,7 +1,7 @@
 /**
  * File: Job
  * Author: Michelle John
- * Date: 25 March 2018
+ * Date: 23 April 2018
  * Purpose: Project Setup
  */
 package things;
@@ -71,7 +71,7 @@ public class Job extends Thing {
         .append(duration)
         .append("\nRequirements: ");
     
-    requirements.forEach(requirement -> sb.append("\n\t" + requirement));
+    requirements.forEach(requirement -> sb.append("\n\t").append(requirement));
     
     return sb.toString();
   }

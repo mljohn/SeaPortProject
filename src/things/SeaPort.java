@@ -1,7 +1,7 @@
 /**
  * File: SeaPort
  * Author: Michelle John
- * Date: 25 March 2018
+ * Date: 23 April 2018
  * Purpose: Project Setup
  */
 package things;
@@ -69,7 +69,7 @@ public class SeaPort extends Thing {
   /**
    * @param docks the {@link List} of {@link Dock}s associated with this SeaPort
    */
-  public void setDocks(List<Dock> docks) {
+  void setDocks(List<Dock> docks) {
     this.docks = docks;
   }
 
@@ -97,7 +97,7 @@ public class SeaPort extends Thing {
   /**
    * @param ships the {@link List} of {@link Ship}s in this SeaPort
    */
-  public void setShips(List<Ship> ships) {
+  void setShips(List<Ship> ships) {
     this.ships = ships;
   }
 
@@ -111,7 +111,7 @@ public class SeaPort extends Thing {
   /**
    * @param persons the {@link List} of {@link Person}s working at this SeaPort
    */
-  public void setPersons(List<Person> persons) {
+  void setPersons(List<Person> persons) {
     this.persons = persons;
   }
 
@@ -119,13 +119,13 @@ public class SeaPort extends Thing {
   public String toString() {
     StringBuilder sb = new StringBuilder(super.toString());
     sb.append("\nDocks: ");
-    docks.forEach(dock -> sb.append("\n\t" + dock));
+    docks.forEach(dock -> sb.append("\n\t").append(dock));
     sb.append("\n\nShips in Queue: ");
-    inWaitQueue.forEach(ship -> sb.append("\n\t" + ship));
+    inWaitQueue.forEach(ship -> sb.append("\n\t").append(ship));
     sb.append("\n\nShips in Port: ");
-    ships.forEach(ship -> sb.append("\n\t" + ship));
+    ships.forEach(ship -> sb.append("\n\t").append(ship));
     sb.append("\n\nPeople: ");
-    persons.forEach(person -> sb.append("\n\t" + person));
+    persons.forEach(person -> sb.append("\n\t").append(person));
     return sb.toString();
   }
 }

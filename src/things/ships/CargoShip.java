@@ -1,7 +1,7 @@
 /**
  * File: CargoShip
  * Author: Michelle John
- * Date: 25 March 2018
+ * Date: 23 April 2018
  * Purpose: Project Setup
  */
 package things.ships;
@@ -119,14 +119,13 @@ public class CargoShip extends Ship {
   
   @Override
   public String toString() {
-    return new StringBuilder(super.toString())
-        .append("\nCargo Value: ")
-        .append(cargoValue)
-        .append("\nCargo Volume: ")
-        .append(cargoVolume)
-        .append("\nCargo Weight: ")
-        .append(cargoWeight)
-        .append("\n")
-        .toString();
+    return super.toString()
+        + "\nCargo Value: "
+        + cargoValue
+        + "\nCargo Volume: "
+        + cargoVolume
+        + "\nCargo Weight: "
+        + cargoWeight
+        +"\n";
   }
 }
