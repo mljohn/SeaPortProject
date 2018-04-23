@@ -1,17 +1,23 @@
 /**
  * File: Job
  * Author: Michelle John
- * Date: 23 April 2018
+ * Date: 22 April 2018
  * Purpose: Project Setup
  */
 package things;
 
+import guielements.SeaPortFrame;
+import guielements.SeaPortTextArea;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.Comparator;
 import java.util.List;
 
 /**
  * Class that extends {#link {@link Thing} and represents a Job.
  */
-public class Job extends Thing {
+public class Job extends Thing implements Runnable {
   
   private double duration;
   private List<String> requirements;
@@ -74,5 +80,23 @@ public class Job extends Thing {
     requirements.forEach(requirement -> sb.append("\n\t").append(requirement));
     
     return sb.toString();
+  }
+
+  @Override
+  public int compareTo(Thing o) {
+    Job job = (Job) o;
+    return Comparator.comparing(Job::getName)
+        .compare(this, job);
+  }
+
+  @Override
+  public void run() {
+    SeaPortFrame jobFrame = new SeaPortFrame("Running Job", 250, 200);
+    JPanel jobPanel = new JPanel();
+    SeaPortTextArea jobTextArea = new SeaPortTextArea(false);
+    jobTextArea.setText("Performing Jobs");
+    jobPanel.add(jobTextArea, BorderLayout.CENTER);
+    jobFrame.add(jobPanel, BorderLayout.CENTER);
+    jobFrame.display();
   }
 }

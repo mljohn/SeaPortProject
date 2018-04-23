@@ -6,6 +6,7 @@
  */
 package things.ships;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -84,6 +85,7 @@ public class Ship extends Thing {
     this.weight = weight;
     this.width = width;
     this.jobs = jobs;
+    Collections.sort(this.jobs);
   }
   
   /**
@@ -182,6 +184,7 @@ public class Ship extends Thing {
    */
   public void setJobs(List<Job> jobs) {
     this.jobs = jobs;
+    Collections.sort(this.jobs);
   }
 
   @Override

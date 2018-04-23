@@ -1,10 +1,12 @@
 /**
  * File: Person
  * Author: Michelle John
- * Date: 23 April 2018
+ * Date: 22 April 2018
  * Purpose: Project Setup
  */
 package things;
+
+import java.util.Comparator;
 
 /**
  * Class that extends {@link Thing} and represents a person.
@@ -49,6 +51,14 @@ public class Person extends Thing {
   public String toString() {
     return super.toString()
         + "\nSkill: "
-        + skill;
+        + skill
+        + "\n";
+  }
+
+  @Override
+  public int compareTo(Thing o) {
+    Person person = (Person) o;
+    return Comparator.comparing(Person::getName)
+        .compare(this, person);
   }
 }

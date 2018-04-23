@@ -1,12 +1,14 @@
 /**
  * File: Dock
  * Author: Michelle John
- * Date: 23 April 2018
+ * Date: 22 April 2018
  * Purpose: Project Setup
  */
 package things;
 
 import things.ships.Ship;
+
+import java.util.Comparator;
 
 /**
  * Class the extends {@link Thing} and represents a Dock.
@@ -55,7 +57,7 @@ public class Dock extends Thing {
   /**
    * @param ship the docked ship
    */
-  public void setShip(Ship ship) {
+  void setShip(Ship ship) {
     this.ship = ship;
   }
 
@@ -69,4 +71,12 @@ public class Dock extends Thing {
     }
     return sb.toString();
   }
+
+  @Override
+  public int compareTo(Thing o) {
+    Dock dock = (Dock) o;
+    return Comparator.comparing(Dock::getName)
+        .compare(this, dock);
+  }
+
 }

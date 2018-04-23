@@ -1,12 +1,13 @@
 /**
  * File: SeaPort
  * Author: Michelle John
- * Date: 23 April 2018
+ * Date: 22 April 2018
  * Purpose: Project Setup
  */
 package things;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import things.ships.Ship;
@@ -127,5 +128,12 @@ public class SeaPort extends Thing {
     sb.append("\n\nPeople: ");
     persons.forEach(person -> sb.append("\n\t").append(person));
     return sb.toString();
+  }
+
+  @Override
+  public int compareTo(Thing o) {
+    SeaPort port = (SeaPort) o;
+    return Comparator.comparing(SeaPort::getName)
+        .compare(this, port);
   }
 }

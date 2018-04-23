@@ -1,7 +1,7 @@
 /**
  * File: World
  * Author: Michelle John
- * Date: 23 April 2018
+ * Date: 22 April 2018
  * Purpose: Project Setup
  */
 package things;
@@ -12,6 +12,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import main.PortTime;
@@ -32,6 +36,8 @@ public class World extends Thing {
   private Map<Integer, Person> personsMap = new HashMap<>();
   private Map<Integer, Job> jobsMap = new HashMap<>();
   private PortTime time;
+
+  private final ExecutorService executorService = new ThreadPoolExecutor(1, 1, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<>(1));
 
   /**
    * Default constructor.
@@ -206,10 +212,20 @@ public class World extends Thing {
           personList.add(person);
         }
       });
+      Collections.sort(dockList);
+      Collections.sort(shipList);
+      Collections.sort(personList);
       port.setDocks(dockList);
       port.setShips(shipList);
       port.setPersons(personList);
     });
+
+    Collections.sort(ports);
+    Collections.sort(docks);
+    Collections.sort(passengerShip);
+    Collections.sort(cargoShip);
+    Collections.sort(persons);
+    Collections.sort(jobs);
 
     ports.forEach(port -> portsMap.put(port.getIndex(), port));
     docks.forEach(dock -> docksMap.put(dock.getIndex(), dock));
@@ -217,6 +233,14 @@ public class World extends Thing {
     cargoShip.forEach(ship -> cargoShipsMap.put(ship.getIndex(), ship));
     persons.forEach(person -> personsMap.put(person.getIndex(), person));
     jobs.forEach(job -> jobsMap.put(job.getIndex(), job));
+  }
+
+  public void startJobs() {
+    ports.forEach(port -> port.getShips().forEach(ship -> ship.getJobs().forEach(executorService::execute)));
+  }
+
+  public void pauseJobs() {
+
   }
   
   @Override

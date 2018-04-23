@@ -1,7 +1,7 @@
 /**
  * File: PassengerShip
  * Author: Michelle John
- * Date: 23 April 2018
+ * Date: 22 April 2018
  * Purpose: Project Setup
  */
 package things.ships;

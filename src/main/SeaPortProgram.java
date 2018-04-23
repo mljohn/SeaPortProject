@@ -1,17 +1,19 @@
 /**
  * File: SeaPortProgram
  * Author: Michelle John
- * Date: 23 April 2018
+ * Date: 22 April 2018
  * Purpose: Project Setup
  */
 package main;
 
 import guielements.SeaPortFrame;
 import guielements.SeaPortTextArea;
+import things.Person;
 import things.World;
 import things.ships.Ship;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.util.ArrayList;
@@ -43,20 +45,26 @@ public class SeaPortProgram {
   private void startGui() {
     
     SeaPortFrame frame = new SeaPortFrame("Sea Port Program", 500, 300);
-    JPanel buttonPanel = new JPanel();
+    JPanel fileDialogButtonPanel = new JPanel();
     JPanel textPanel = new JPanel(new GridBagLayout());
-    JPanel sortButtonPanel = new JPanel();
+    JPanel actionButtonPanel = new JPanel();
     SeaPortTextArea textArea = new SeaPortTextArea(false);
     JScrollPane textScrollPane = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
         JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
     JButton fileDialogButton = new JButton("ChooseFile");
     JButton sortShipsButton = new JButton("Sort Ships");
     JButton showTreeButton = new JButton("Show Tree");
+    JButton sortPersonsButton = new JButton("Sort Persons");
+    JButton startJobsButton = new JButton("Start Jobs");
+    JButton pauseJobsButton = new JButton("Pause Jobs");
+    FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files","txt");
     JFileChooser chooser = new JFileChooser(".");
+    chooser.setFileFilter(filter);
+    GridBagConstraints guiConstraints = createConstraints(0, 0);
 
 
-    buttonPanel.add(fileDialogButton);
-    textPanel.add(textScrollPane, createConstraints(0, 0));
+    fileDialogButtonPanel.add(fileDialogButton);
+    textPanel.add(textScrollPane, guiConstraints);
 
     fileDialogButton.addActionListener(event -> {
       int returnValue = chooser.showOpenDialog(frame);
@@ -71,7 +79,7 @@ public class SeaPortProgram {
           contents.append("\n");
         });
         textArea.setText(contents.toString());
-        frame.add(sortButtonPanel, BorderLayout.SOUTH);
+        frame.add(actionButtonPanel, BorderLayout.SOUTH);
         frame.display();
       }
     });
@@ -83,11 +91,24 @@ public class SeaPortProgram {
       shipList.forEach(ships::append);
       textArea.setText(ships.toString());
       textPanel.removeAll();
-      textPanel.add(textScrollPane, createConstraints(0, 0));
+      textPanel.add(textScrollPane, guiConstraints);
       frame.display();
       frame.repaint();
         }
     );
+
+    sortPersonsButton.addActionListener(event -> {
+      List<Person> personList = new ArrayList<>();
+      world.getPorts().forEach(port -> personList.addAll(port.getPersons()));
+      personList.sort(Person::compareTo);
+      StringBuilder persons = new StringBuilder();
+      personList.forEach(persons::append);
+      textArea.setText(persons.toString());
+      textPanel.removeAll();
+      textPanel.add(textScrollPane, guiConstraints);
+      frame.repaint();
+      frame.display();
+    });
 
     showTreeButton.addActionListener(event -> {
       DefaultMutableTreeNode top = new DefaultMutableTreeNode("World");
@@ -97,15 +118,40 @@ public class SeaPortProgram {
       JScrollPane treeScrollPane = new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
           JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
       textPanel.removeAll();
-      textPanel.add(treeScrollPane, createConstraints(0, 0));
+      textPanel.add(treeScrollPane, guiConstraints);
       frame.display();
       frame.repaint();
     });
 
-    sortButtonPanel.add(sortShipsButton);
-    sortButtonPanel.add(showTreeButton);
+    startJobsButton.addActionListener(event -> {
+      textArea.setText("Jobs started");
+      textPanel.removeAll();
+      textPanel.add(textScrollPane, guiConstraints);
+      world.startJobs();
+      actionButtonPanel.remove(startJobsButton);
+      actionButtonPanel.add(pauseJobsButton);
+      frame.repaint();
+      frame.display();
+    });
+
+    pauseJobsButton.addActionListener(event -> {
+      textArea.setText("Jobs paused");
+      textPanel.removeAll();
+      textPanel.add(textScrollPane, guiConstraints);
+      world.pauseJobs();
+      actionButtonPanel.remove(pauseJobsButton);
+      actionButtonPanel.add(startJobsButton);
+      frame.repaint();
+      frame.display();
+    });
+
+
+    actionButtonPanel.add(sortShipsButton);
+    actionButtonPanel.add(sortPersonsButton);
+    actionButtonPanel.add(showTreeButton);
+    actionButtonPanel.add(startJobsButton);
     
-    frame.add(buttonPanel, BorderLayout.NORTH);
+    frame.add(fileDialogButtonPanel, BorderLayout.NORTH);
     frame.add(textPanel, BorderLayout.CENTER);
 
     
@@ -131,6 +177,11 @@ public class SeaPortProgram {
     return gbc;
   }
 
+  /**
+   * Creates the tree view of the {@link World}.
+   *
+   * @param top the top element of the tree
+   */
   private void createNodes(DefaultMutableTreeNode top) {
     world.getPorts().forEach(port -> {
       DefaultMutableTreeNode portNode = new DefaultMutableTreeNode(port.getName());
