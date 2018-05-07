@@ -1,7 +1,7 @@
 /**
  * File: Job
  * Author: Michelle John
- * Date: 22 April 2018
+ * Date: 06 May 2018
  * Purpose: Project Setup
  */
 package things;
@@ -97,6 +97,8 @@ public class Job extends Thing implements Runnable {
     jobTextArea.setText("Performing Jobs");
     jobPanel.add(jobTextArea, BorderLayout.CENTER);
     jobFrame.add(jobPanel, BorderLayout.CENTER);
+    jobFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jobFrame.display();
+    jobFrame.dispose();
   }
 }

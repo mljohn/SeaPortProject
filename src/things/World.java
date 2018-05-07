@@ -1,7 +1,7 @@
 /**
  * File: World
  * Author: Michelle John
- * Date: 22 April 2018
+ * Date: 06 May 2018
  * Purpose: Project Setup
  */
 package things;
@@ -12,10 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 import main.PortTime;
@@ -37,7 +34,7 @@ public class World extends Thing {
   private Map<Integer, Job> jobsMap = new HashMap<>();
   private PortTime time;
 
-  private final ExecutorService executorService = new ThreadPoolExecutor(1, 1, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<>(1));
+  private final ExecutorService executorService = new ThreadPoolExecutor(1, 1, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<>(500));
 
   /**
    * Default constructor.
@@ -236,7 +233,29 @@ public class World extends Thing {
   }
 
   public void startJobs() {
-    ports.forEach(port -> port.getShips().forEach(ship -> ship.getJobs().forEach(executorService::execute)));
+    ports.forEach(port -> {
+      List<Ship> dockedShipList = new ArrayList<>(port.getShips());
+      dockedShipList.forEach(ship -> {
+        List<Job> neededJobList = new ArrayList<>(ship.getJobs());
+        List<Job> jobFoundList = new ArrayList<>();
+        neededJobList.forEach(job -> {
+          job.getRequirements().forEach(requirement -> {
+            personsMap.forEach((k, v) -> {
+              if ((v.getParent() == port.getIndex()) && (v.getSkill().equals(requirement))) {
+                jobFoundList.add(job);
+              }
+            });
+          });
+        });
+        neededJobList.removeAll(jobFoundList);
+        if (neededJobList.isEmpty()) {
+          ship.getJobs().forEach(executorService::execute);
+          System.err.println("Job done!");
+        } else {
+          System.err.println("Can't do the job");
+        }
+      });
+    });
   }
 
   public void pauseJobs() {
